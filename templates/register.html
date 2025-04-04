@@ -1,0 +1,41 @@
+<!-- /templates/register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Registration</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    
+
+    <h2>Student Registration</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+      <label for="name">Full Name</label>
+      <input type="text" name="name" placeholder="Your name" required>
+
+      <label for="mobile">Mobile Number</label>
+      <input type="text" name="mobile" placeholder="10-digit number" pattern="\d{10}" title="Enter a valid 10-digit number" required>
+
+      <label for="class_">Class</label>
+      <input type="text" name="class_" placeholder="e.g. FY BSc CS" required>
+
+      <label for="password">Password</label>
+      <input type="password" name="password" placeholder="Create a strong password" required>
+
+      <button type="submit">Register</button>
+      <p style="text-align:center; margin-top: 10px;">Already registered? <a href="{{ url_for('login') }}">Login here</a></p>
+    </form>
+  </div>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

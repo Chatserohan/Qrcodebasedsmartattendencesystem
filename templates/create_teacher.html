@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Teacher</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="dark-toggle" onclick="toggleDarkMode()">🌙</div>
+    <h2>Create Teacher Account</h2>
+
+    {% if success %}
+      <div class="toast toast-success">✅ Teacher created successfully!</div>
+    {% endif %}
+
+    <form method="POST">
+      <label>Full Name:</label>
+      <input type="text" name="name" required>
+
+      <label>Email ID:</label>
+      <input type="email" name="email" required>
+
+      <label>Password:</label>
+      <input type="text" name="password" required>
+
+      <button type="submit">Create</button>
+    </form>
+  </div>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

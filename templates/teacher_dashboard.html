@@ -1,0 +1,36 @@
+<!-- /templates/teacher_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    
+
+    <h2>👨‍🏫 Teacher Dashboard</h2>
+    <p class="subtext">Welcome, Admin! Manage attendance with the tools below.</p>
+
+    <div class="card-container">
+      <a href="{{ url_for('generate_qr') }}" class="card">
+        <div class="card-icon">📌</div>
+        <div class="card-title">Generate QR</div>
+      </a>
+
+      <a href="{{ url_for('teacher_view_attendance') }}" class="card">
+        <div class="card-icon">📊</div>
+        <div class="card-title">View Attendance</div>
+      </a>
+
+      <a href="{{ url_for('login') }}" class="card logout-card">
+        <div class="card-icon">🚪</div>
+        <div class="card-title">Logout</div>
+      </a>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

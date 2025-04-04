@@ -1,0 +1,51 @@
+<!-- templates/generate_qr.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generate QR Code</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        
+
+        <h2>📌 Generate QR for Attendance</h2>
+        
+        <form method="POST" class="form">
+            <label for="class">Class</label>
+            <select name="class" id="class" required>
+                <option value="" disabled selected>Select Class</option>
+                <option value="MSC FY">MSC FY</option>
+                <option value="MSC SY">MSC SY</option>
+            </select>
+
+            <label for="subject">Subject</label>
+            <select name="subject" id="subject" required>
+                <option value="" disabled selected>Select Subject</option>
+                <option value="Subject 1">Subject 1</option>
+                <option value="Subject 2">Subject 2</option>
+                <option value="Subject 3">Subject 3</option>
+                <option value="Subject 4">Subject 4</option>
+                <option value="Subject 5">Subject 5</option>
+            </select>
+
+            <button type="submit" class="btn">Generate QR</button>
+        </form>
+
+        {% if qr_data %}
+            <div class="qr-box">
+                <h3>✅ QR Code Generated</h3>
+                <img src="data:image/png;base64,{{ qr_data }}" alt="QR Code" class="qr-image">
+                <p class="info-text">Ask students to scan this QR code using the attendance app.</p>
+            </div>
+        {% endif %}
+
+        <div class="back-link">
+            <a href="{{ url_for('teacher_dashboard') }}">⬅ Back to Dashboard</a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

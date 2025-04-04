@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOD Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Welcome to HOD Dashboard</h2>
+    <p>Hi, {{ session['username'] }}!</p>
+
+    <p>More features coming soon...</p>
+
+    <a href="{{ url_for('login') }}">Logout</a>
+  </div>
+</body>
+</html>

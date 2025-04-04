@@ -1,0 +1,74 @@
+<!-- /templates/mark_attendance_live.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live QR Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    video {
+      border: 3px solid #3498db;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+
+    <h2>📹 Scan QR Code Live</h2>
+    <video id="video" width="400" height="300" autoplay></video>
+    <div class="message" id="response"></div>
+    <a href="{{ url_for('student_dashboard') }}" class="back-link">← Back to Dashboard</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <script>
+    const video = document.getElementById('video');
+    const responseDiv = document.getElementById('response');
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => {
+        video.srcObject = stream;
+      });
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function scan() {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+        if (code) {
+          fetch('{{ url_for("mark_attendance_live") }}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ qr_data: code.data })
+          })
+          .then(res => res.json())
+          .then(data => {
+            responseDiv.textContent = data.message;
+          });
+        }
+      }
+      requestAnimationFrame(scan);
+    }
+
+    scan();
+    
+  </script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

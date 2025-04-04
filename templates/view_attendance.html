@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Attendance</title>
+</head>
+<body>
+   
+
+    <h1>Attendance Records</h1>
+
+    {% if role == "student" %}
+        <table border="1">
+            <tr>
+                <th>Class ID</th>
+                <th>Timestamp</th>
+            </tr>
+            {% for record in records %}
+                <tr>
+                    <td>{{ record[0] }}</td>
+                    <td>{{ record[1] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <table border="1">
+            <tr>
+                <th>Student Name</th>
+                <th>Class ID</th>
+                <th>Timestamp</th>
+            </tr>
+            {% for record in records %}
+                <tr>
+                    <td>{{ record[0] }}</td>
+                    <td>{{ record[1] }}</td>
+                    <td>{{ record[2] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    
+    <br>
+    <a href="/dashboard">Back to Dashboard</a>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

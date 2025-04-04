@@ -1,0 +1,73 @@
+<!-- /templates/student_view_attendance.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .no-records {
+      margin-top: 20px;
+      font-style: italic;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+
+    <h2>📋 My Attendance</h2>
+    
+    {% if records %}
+    <table>
+      <thead>
+        <tr>
+          <th>Class</th>
+          <th>Subject</th>
+          <th>Date</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for class, subject, date, time in records %}
+        <tr>
+          <td>{{ class }}</td>
+          <td>{{ subject }}</td>
+          <td>{{ date }}</td>
+          <td>{{ time }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <div class="no-records">No attendance records found.</div>
+    {% endif %}
+
+    <a href="{{ url_for('student_dashboard') }}" class="back-link">← Back to Dashboard</a>
+  </div>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

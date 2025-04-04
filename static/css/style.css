@@ -1,0 +1,228 @@
+:root {
+    --bg-color: #f5f7fa;
+    --text-color: #222;
+    --card-bg: #fff;
+    --accent-color: #4a90e2;
+    --btn-bg: #4a90e2;
+    --btn-hover: #357ab8;
+    --card-hover: #e0f7e9;
+    --table-header: #4CAF50;
+  }
+  
+  [data-theme="dark"] {
+    --bg-color: #1e1e1e;
+    --text-color: #f5f5f5;
+    --card-bg: #2c2c2c;
+    --accent-color: #90caf9;
+    --btn-bg: #333;
+    --btn-hover: #555;
+    --card-hover: #444;
+    --table-header: #2e7d32;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--text-color);
+  }
+  
+  form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: 0.3s ease;
+    background: white;
+    color: #000;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+  }
+  
+  button {
+    background-color: var(--btn-bg);
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: var(--btn-hover);
+  }
+  
+  .alert {
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .alert-success {
+    background: #dff0d8;
+    color: #3c763d;
+  }
+  
+  .alert-danger {
+    background: #f2dede;
+    color: #a94442;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  table th, table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    background-color: var(--card-bg);
+    transition: background-color 0.3s ease;
+  }
+  
+  .modern-table thead {
+    background-color: var(--table-header);
+    color: white;
+  }
+  
+  .modern-table th, .modern-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .modern-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .subtext {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+  
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .card {
+    background-color: #f7f7f7;
+    padding: 30px 40px;
+    border-radius: 10px;
+    text-align: center;
+    width: 200px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-decoration: none;
+    color: var(--text-color);
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    background-color: var(--card-hover);
+  }
+  
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .logout-card {
+    background-color: #ffecec;
+  }
+  
+  .logout-card:hover {
+    background-color: #ffdddd;
+  }
+  
+  .dark-toggle {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    background: #4caf50;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+    z-index: 999;
+  }
+  
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 20px;
+    }
+  
+    table, table th, table td {
+      font-size: 14px;
+    }
+  
+    .card {
+      width: 100%;
+    }
+  }
+  

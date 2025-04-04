@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    
+
+    <h1>Welcome to Dashboard</h1>
+    <button onclick="generateQR()">Generate QR Code</button>
+    <img id="qr_code" src="" alt="QR Code">
+
+
+    <a href="/view_attendance"><button>View Attendance</button></a>
+
+
+    <script>
+        function generateQR() {
+            fetch('/generate_qr/class101')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('qr_code').src = data.qr_code;
+            });
+        }
+    </script>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!-- /templates/student_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    
+
+    <h2>Welcome, {{ session['username'] }}</h2>
+
+    <div class="card-container" style="margin-top: 30px;">
+      <a href="{{ url_for('mark_attendance') }}" class="card">
+        <div class="card-icon">📷</div>
+        <div class="card-title">Upload QR</div>
+      </a>
+      <a href="{{ url_for('mark_attendance_live') }}" class="card">
+        <div class="card-icon">🔴</div>
+        <div class="card-title">Live QR Scanner</div>
+      </a>
+      <a href="{{ url_for('student_view_attendance') }}" class="card">
+        <div class="card-icon">📊</div>
+        <div class="card-title">View Attendance</div>
+      </a>
+      <a href="{{ url_for('login') }}" class="card logout-card">
+        <div class="card-icon">🚪</div>
+        <div class="card-title">Logout</div>
+      </a>
+    </div>
+
+    <h3 style="margin-top: 40px;">Your Attendance Records</h3>
+    {% if attendance_records %}
+    <table>
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Date</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for subject, date, time in attendance_records %}
+        <tr>
+          <td>{{ subject }}</td>
+          <td>{{ date }}</td>
+          <td>{{ time }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>No attendance marked yet.</p>
+    {% endif %}
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
