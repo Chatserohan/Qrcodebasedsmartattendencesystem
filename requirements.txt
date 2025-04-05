@@ -4,5 +4,4 @@ qrcode
 pyzbar
 opencv-python-headless
 numpy
-pyzbar
-libzbar
+
