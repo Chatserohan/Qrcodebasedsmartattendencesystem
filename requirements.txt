@@ -5,4 +5,4 @@ pyzbar
 opencv-python-headless
 numpy
 pyzbar
-zbar
+libzbar
