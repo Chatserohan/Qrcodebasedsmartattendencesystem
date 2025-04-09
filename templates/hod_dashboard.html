@@ -1,18 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>HOD Dashboard</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <title>HOD Dashboard - Smart Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --card: #f5f5f5;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #ffffff;
+      --card: #1f1f1f;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .toggle-dark {
+      cursor: pointer;
+      padding: 0.4rem 0.8rem;
+      background: #ccc;
+      border-radius: 5px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 1rem;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 1rem auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    input,
+    button {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 0.3rem;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      margin-top: 1rem;
+    }
+
+    .section-title {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #888;
+    }
+
+    th,
+    td {
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      background: #333;
+      color: #fff;
+      padding: 1rem;
+      border-radius: 5px;
+      display: none;
+      z-index: 1000;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        margin: 1rem;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="container">
-    <h2>Welcome to HOD Dashboard</h2>
-    <p>Hi, {{ session['username'] }}!</p>
 
-    <p>More features coming soon...</p>
+  <header>
+    <h1>HOD Dashboard</h1>
+    <div class="toggle-dark" onclick="toggleDarkMode()">Toggle Dark Mode</div>
+  </header>
 
-    <a href="{{ url_for('login') }}">Logout</a>
+  <!-- Create Teacher Section -->
+  <div class="card">
+    <h2>Create New Teacher</h2>
+    <form method="POST" action="/hod/create-teacher">
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" name="email" placeholder="teacher@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" name="password" placeholder="Set password" required>
+      </div>
+      <button type="submit">Create Teacher</button>
+    </form>
   </div>
+
+  <!-- View All Teachers -->
+  <div class="card">
+    <h2>All Teachers</h2>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+      </tr>
+      {% for teacher in teachers %}
+      <tr>
+        <td>{{ teacher['id'] }}</td>
+        <td>{{ teacher['email'] }}</td>
+      </tr>
+      {% endfor %}
+
+    </table>
+  </div>
+
+  <!-- View All Students -->
+  <div class="card">
+    <h2>All Students</h2>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Class</th>
+      </tr>
+      {% for student in students %}
+      <tr>
+        <td>{{ student['id'] }}</td>
+        <td>{{ student['name'] }}</td>
+        <td>{{ student['mobile'] }}</td>
+        <td>{{ student['class'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- View Attendance -->
+  <div class="card">
+    <h2>Attendance Records</h2>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Student ID</th>
+        <th>Class</th>
+        <th>Date</th>
+        <th>Status</th>
+      </tr>
+      {% for record in attendance %}
+      <tr>
+        <td>{{ record['id'] }}</td>
+        <td>{{ record['student_id'] }}</td>
+        <td>{{ record['class'] }}</td>
+        <td>{{ record['date'] }}</td>
+        <td>{{ record['status'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <form method="GET" action="/hod/download-attendance">
+      <button type="submit">Download Report CSV</button>
+    </form>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    function showToast(msg, isSuccess = true) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.style.background = isSuccess ? "green" : "red";
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
+    }
+
+    {% with messages = get_flashed_messages(with_categories = true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    showToast("{{ message }}", {{ 'true' if category == 'success' else 'false' }});
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </script>
+
 </body>
+
 </html>

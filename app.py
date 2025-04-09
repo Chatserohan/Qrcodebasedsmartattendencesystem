@@ -3,7 +3,8 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import qrcode
-from datetime import datetime
+from datetime import datetime, timedelta
+
 from io import BytesIO
 import base64
 from pyzbar.pyzbar import decode
@@ -117,6 +118,8 @@ def mark_attendance():
     return render_template('mark_attendance.html', message=message)
 
 
+    from datetime import datetime, timedelta
+
 @app.route('/student/mark_attendance_live', methods=['GET', 'POST'])
 def mark_attendance_live():
     if session.get('role') != 'student':
@@ -126,6 +129,15 @@ def mark_attendance_live():
         return render_template('mark_attendance_live.html')
 
     elif request.method == 'POST':
+        # Check last scan time
+        now = datetime.now()
+        last_mark_time_str = session.get('last_attendance_time')
+
+        if last_mark_time_str:
+            last_mark_time = datetime.strptime(last_mark_time_str, '%Y-%m-%d %H:%M:%S')
+            if now - last_mark_time < timedelta(minutes=1):
+                return jsonify({'message': '⚠️ Please wait a minute before scanning again.'})
+
         data = request.get_json()
         qr_text = data.get('qr_data', '')
 
@@ -145,12 +157,50 @@ def mark_attendance_live():
             conn.commit()
             conn.close()
 
+            # Save the timestamp in session after successful mark
+            session['last_attendance_time'] = now.strftime('%Y-%m-%d %H:%M:%S')
+
             return jsonify({'message': '✅ Attendance marked successfully!'})
 
         except Exception as e:
             return jsonify({'message': f'❌ Failed to mark attendance: {str(e)}'})
 
+# _______________________________________________________________
 
+# @app.route('/student/mark_attendance_live', methods=['GET', 'POST'])
+# def mark_attendance_live():
+#     if session.get('role') != 'student':
+#         return redirect(url_for('login'))
+
+#     if request.method == 'GET':
+#         return render_template('mark_attendance_live.html')
+
+#     elif request.method == 'POST':
+#         data = request.get_json()
+#         qr_text = data.get('qr_data', '')
+
+#         try:
+#             parts = dict(item.split(':', 1) for item in qr_text.split('|'))
+#             class_name = parts['class']
+#             subject = parts['subject']
+#             timestamp = parts['timestamp']
+#             date, time = timestamp.split()
+
+#             conn = sqlite3.connect(DATABASE)
+#             c = conn.cursor()
+#             c.execute('''
+#                 INSERT INTO attendance (student_id, class, subject, date, time)
+#                 VALUES (?, ?, ?, ?, ?)
+#             ''', (session['user_id'], class_name, subject, date, time))
+#             conn.commit()
+#             conn.close()
+
+#             return jsonify({'message': '✅ Attendance marked successfully!'})
+
+#         except Exception as e:
+#             return jsonify({'message': f'❌ Failed to mark attendance: {str(e)}'})
+
+# ______________________________________________
 # @app.route('/student/mark_attendance_live', methods=['POST'])
 # def mark_attendance_live():
 #     data = request.get_json()
@@ -223,7 +273,7 @@ def register():
         mobile = request.form['mobile']
         student_class = request.form['class_']
         password = generate_password_hash(request.form['password'])
-
+# *************************
         try:
             conn = sqlite3.connect(DATABASE)
             c = conn.cursor()
@@ -238,7 +288,7 @@ def register():
             conn.close()
 
     return render_template('register.html')
-
+# ***************************
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -303,7 +353,7 @@ def student_dashboard():
 def teacher_dashboard():
     if session.get('role') != 'teacher':
         return redirect(url_for('login'))
-    return render_template('teacher_dashboard.html', message="Welcome Admin!")
+    return render_template('teacher_dashboard.html', message="Welcome Teacher!")
 
 
 @app.route('/teacher/generate_qr', methods=['GET', 'POST'])
@@ -413,11 +463,77 @@ def hod_login():
     
     return render_template('hod_login.html')
 
-@app.route('/hod-dashboard')
+@app.route('/hod/dashboard')
 def hod_dashboard():
     if 'username' not in session or session.get('role') != 'hod':
         return redirect(url_for('hod_login'))
-    return render_template('hod_dashboard.html')
+
+    conn = get_db_connection()
+
+    teachers = conn.execute("SELECT * FROM teachers").fetchall()
+    students = conn.execute("SELECT * FROM students").fetchall()
+    attendance = conn.execute("SELECT * FROM attendance").fetchall()
+
+    conn.close()
+
+    return render_template('hod_dashboard.html',
+                           teachers=teachers,
+                           students=students,
+                           attendance=attendance)
+
+
+@app.route('/hod/download-attendance')
+def download_attendance():
+    if 'username' not in session or session.get('role') != 'hod':
+        return redirect(url_for('hod_login'))
+
+    conn = get_db_connection()
+    data = conn.execute("SELECT * FROM attendance").fetchall()
+    conn.close()
+
+    si = io.StringIO()
+    cw = csv.writer(si)
+    cw.writerow(['ID', 'Student ID', 'Class', 'Date', 'Status'])
+    for row in data:
+        cw.writerow([row['id'], row['student_id'], row['class'], row['date'], row['status']])
+
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=attendance_report.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
+
+
+
+
+
+# ******************************************************************
+
+# create teacher account 
+
+@app.route('/hod/create-teacher', methods=['GET', 'POST'])
+def create_teacher():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        try:
+            conn = sqlite3.connect(DATABASE)
+            c = conn.cursor()
+            c.execute("INSERT INTO teachers (email, password) VALUES (?, ?)", (email, password))
+            conn.commit()
+            message = '✅ Teacher account created successfully!'
+        except sqlite3.IntegrityError:
+            message = '❌ Email already exists. Try a different one.'
+        finally:
+            conn.close()
+
+        return render_template('create_teacher.html', message=message)
+
+    return render_template('create_teacher.html')
+
+
+
+
 
 
 

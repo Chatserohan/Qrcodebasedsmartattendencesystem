@@ -26,8 +26,12 @@
       <input type="text" name="mobile" placeholder="10-digit number" pattern="\d{10}" title="Enter a valid 10-digit number" required>
 
       <label for="class_">Class</label>
-      <input type="text" name="class_" placeholder="e.g. FY BSc CS" required>
-
+      <select name="class_" required>
+        <option value="">-- Select Class --</option>
+        <option value="FY BSc CS">Msc FY</option>
+        <option value="SY BSc CS">Msc SY</option>
+      </select>
+      
       <label for="password">Password</label>
       <input type="password" name="password" placeholder="Create a strong password" required>
 
